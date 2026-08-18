@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="page results-page">
+
+    <div class="card results-card">
+
+        <div class="header-row">
+            <div>
+                <div class="brand">AI Resume Screening</div>
+                <h1>Candidate Ranking</h1>
+                <p class="subtitle">
+                    Candidates are ranked by overall match score.
+                </p>
+            </div>
+
+            <a href="/" class="secondary-button link-button">
+                New Screening
+            </a>
+        </div>
+
+        <div class="requirements">
+            <div class="requirements-title">Required Skills</div>
+
+            <div class="tags">
+                {% for skill in skills %}
+                <span class="tag">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>Score interpretation:</strong>
+            The percentage is a candidate <strong>match score</strong>,
+            not statistical model accuracy. It combines skill matching,
+            relevant experience, education, work/projects, and
+            certification evidence.
+        </div>
+
+        {% if results %}
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Resume</th>
+                    <th>Overall Match</th>
+                    <th>Skills</th>
+                    <th>Experience</th>
+                    <th>Education</th>
+                    <th>Work / Projects</th>
+                    <th>Certifications</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for candidate in results %}
+                <tr>
+                    <td class="rank">#{{ candidate.rank }}</td>
+
+                    <td class="filename">
+                        {{ candidate.filename }}
+                    </td>
+
+                    <td>
+                        <div class="overall-score">
+                            <div class="score-bar">
+                                <div
+                                    class="score-fill"
+                                    style="width: {{ candidate.score }}%;"
+                                ></div>
+                            </div>
+                            <strong>{{ candidate.score }}%</strong>
+                        </div>
+                    </td>
+
+                    <td>{{ candidate.skills_score }}%</td>
+                    <td>
+                        {{ candidate.experience_score }}%
+                        {% if candidate.experience_years > 0 %}
+                        <small>
+                            ({{ candidate.experience_years }} yrs detected)
+                        </small>
+                        {% endif %}
+                    </td>
+                    <td>{{ candidate.education_score }}%</td>
+                    <td>{{ candidate.work_project_score }}%</td>
+                    <td>{{ candidate.certification_score }}%</td>
+                </tr>
+
+                <tr class="details-row">
+                    <td colspan="8">
+
+                        <div class="details">
+
+                            <div>
+                                <strong>Matched Skills</strong>
+                                {% if candidate.matched_skills %}
+                                <div class="tags compact">
+                                    {% for skill in candidate.matched_skills %}
+                                    <span class="tag matched">
+                                        {{ skill }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <span class="muted">None detected</span>
+                                {% endif %}
+                            </div>
+
+                            <div>
+                                <strong>Missing Required Skills</strong>
+                                {% if candidate.missing_skills %}
+                                <div class="tags compact">
+                                    {% for skill in candidate.missing_skills %}
+                                    <span class="tag missing">
+                                        {{ skill }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <span class="success">
+                                    All required skills detected
+                                </span>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <div class="empty">
+            No resumes were available for evaluation.
+        </div>
+        {% endif %}
+
+        <a href="/" class="back-link">← Start another screening</a>
+
+    </div>
+</div>
+</body>
+</html>
