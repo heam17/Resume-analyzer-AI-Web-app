@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pandas
+scikit-learn
+pdfplumber
+spacy
+python-multipart
+uvicorn
+PyPDF2
+python-multipart
